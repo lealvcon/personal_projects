@@ -1,13 +1,13 @@
 class Node:
     '''Implementation of a node to work with data structures'''
     
-    def __init__(self, data):
+    def __init__(self, data, next_node=None):
         """assigns the data to the node while initializing its link as None"""
         self.data=data
-        self.next_node=None
+        self.next_node=next_node
         
     def __repr__(self):
-        return "Node containing the {0}: {1}".format(type(self.data),self.data)
+        return "Node({0}, {1})".format(repr(self.data),repr(self.next_node))
         
     def set_data(self, data):
         '''assigns the specified data to the node'''
@@ -290,8 +290,8 @@ class MaxHeap:
         return len(self.heap)
     
     def get_heap(self):
-    '''returns the list used to create the heap'''
-    return self.heap
+        '''returns the list used to create the heap'''
+        return self.heap
     
     def heapify_up(self):
         idx=len(self.heap)-1
