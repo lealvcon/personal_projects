@@ -118,7 +118,7 @@ class Stack:
             raise StackOverflow('reached maximum capacity of the stack')
         else:
             t=Node(value)    
-            t.set_next_node(self.top)
+            t.set_next_node(self.__top)
             self.__top=t
             self.__size+=1
         
@@ -350,34 +350,53 @@ class MaxHeap:
 class Vertex:
     
     def __init__(self, value):
-        self.value=value
-        self.edges={}
+        self.__value=value
+        self.__edges={}
         
     def __repr__(self):
-        return 'Vertex({})'.format(repr(self.value))
+        return 'Vertex({})'.format(repr(self.__value))
         
     def add_edge(self, vertex, weight=0):
-        self.edges[vertex]=weight
+        self.__edges[vertex]=weight
     
     
     def get_edges(self):
-        return list(zip(self.edges.keys(), self.edges.values()))
+        return list(zip(self.__edges.keys(), self.__edges.values()))
     
 #%%
 
 class Graph:
     
     def __init__(self, directed=False):
-        self.directed=directed
-        self.graph_dict={}
+        self.__directed=directed
+        self.__graph_dict={}
         
+    def get_graph(self):
+        '''dictionary with all vertices found in the graph'''
+        return self.__graph_dict
+    
     def add_vertex(self, vertex_value):
-        self.graph_dict[vertex_value]=Vertex(vertex_value)
+        '''adds a vertex to the graph using the specified value'''
+        self.__graph_dict[vertex_value]=Vertex(vertex_value)
         
     def add_edge(self, from_vertex, to_vertex, weight=0):
-        self.graph_dict[from_vertex].add_edge(self.graph_dict[to_vertex], weight)
-        if not self.directed:
-            self.graph_dict[to_vertex].add_edge(self.graph_dict[from_vertex], weight)
+        '''adds an edge between two vertices within the graph, both specified by value'''
+        self.__graph_dict[from_vertex].add_edge(self.__graph_dict[to_vertex], weight)
+        if not self.__directed:
+            self.__graph_dict[to_vertex].add_edge(self.__graph_dict[from_vertex], weight)
+            
+    def find_path(self, start_vertex, end_vertex):
+        path=[self.__graph_dict[start_vertex]]
+        visited=[]
+        while path:
+            current_vertex=path.pop(0)
+            if (current_vertex == self.__graph_dict[end_vertex]) :
+                return True
+            else:
+                visited.append(current_vertex)
+                path+=[v for v,w in current_vertex.get_edges() if v not in visited]
+        return False
+            
         
 
 v1=Vertex('entrance')
@@ -396,6 +415,7 @@ railway.add_vertex('harwick')
 
 railway.add_edge('peel', 'harwick')
 railway.add_edge('peel', 'callan')
+railway.add_edge('harwick','callan')
 
-print(railway.graph_dict)
-print(railway.graph_dict['peel'].get_edges())
+print(railway.get_graph())
+print(railway.get_graph()['peel'].get_edges())
