@@ -1,29 +1,29 @@
 class Node:
     '''Implementation of a node to work with data structures'''
     
-    def __init__(self, data, next_node=None):
+    def __init__(self, data):
         """assigns the data to the node while initializing its link as None"""
-        self.data=data
-        self.next_node=next_node
+        self.__data=data
+        self.__next_node=None
         
     def __repr__(self):
-        return "Node({0}, {1})".format(repr(self.data),repr(self.next_node))
+        return "Node({0}, {1})".format(repr(self.__data),repr(self.__next_node))
         
     def set_data(self, data):
         '''assigns the specified data to the node'''
-        self.data=data
+        self.__data=data
         
     def get_data(self):
         '''retrieve the data contained in this node'''
-        return self.data
+        return self.__data
     
     def set_next_node(self, node):
         '''sets the link this node points to'''
-        self.next_node=node
+        self.__next_node=node
         
     def get_next_node(self):
         '''retrieve the node this node points to'''
-        return self.next_node
+        return self.__next_node
     
 #%%
     
@@ -32,38 +32,38 @@ class LinkedList:
     class object. see reference for Node'''
     def __init__(self):
         '''Initializes an empty linked list'''
-        self.head_node=None
-        self.size=0
+        self.__head_node=None
+        self.__size=0
         
     def __iter__(self):
-        self.i=0
-        self.current_node=self.head_node
+        self.__i=0
+        self.current_node=self.__head_node
         return self
     
     def __next__(self):
-        if self.i < self.size:
+        if self.__i < self.__size:
             n=self.current_node
             self.current_node=self.current_node.get_next_node()
-            self.i+=1
+            self.__i+=1
             return n
         else:
             raise StopIteration
           
     def get_size(self):
         '''returns the size of the linked list'''
-        return self.size
+        return self.__size
     
     def add_node(self, new_node):
         '''appends a node to the linked list as the new head node and creates 
          a link to the previous head node. if the linked list is empty it assigns
          the new node as the head and tail'''
-        if self.size == 0:
-            self.head_node=new_node
-            self.size+=1
+        if self.__size == 0:
+            self.__head_node=new_node
+            self.__size+=1
         else:
-            new_node.set_next_node(self.head_node)
-            self.head_node=new_node
-            self.size+=1
+            new_node.set_next_node(self.__head_node)
+            self.__head_node=new_node
+            self.__size+=1
             
     def find_node(self, data):
         """Searches through the linked list for a node's data that matches the
@@ -81,18 +81,18 @@ class LinkedList:
     def remove_node(self, data):
         '''Removes the first node containing the specified data, returns True
         if succesful and False if the specified data was not found'''
-        if self.size == 0:
+        if self.__size == 0:
             raise IndexError('attempting to remove a node from an empty linked list')
-        elif self.head_node.get_data() == data:
-            self.head_node=self.head_node.get_next_node()
-            self.size-=1
+        elif self.__head_node.get_data() == data:
+            self.__head_node=self.__head_node.get_next_node()
+            self.__size-=1
         else:
-            prev_node=self.head_node
-            current_node=self.head_node.get_next_node()
+            prev_node=self.__head_node
+            current_node=self.__head_node.get_next_node()
             while current_node:
                 if current_node.get_data() == data:
                     prev_node.set_next_node(current_node.get_next_node())
-                    self.size-=1
+                    self.__size-=1
                     return True
                 else:
                     prev_node=current_node
@@ -105,13 +105,13 @@ class Stack:
     data structure'''
     def __init__(self, max_size):
         '''initializes an empty stack with the set maximum size'''
-        self.max_size=max_size
-        self.size=0
-        self.top=None
+        self.__max_size=max_size
+        self.__size=0
+        self.__top=None
         
     def push(self, value):
         '''adds the specified value to the top of the stack'''
-        if self.size == self.max_size:
+        if self.__size == self.__max_size:
             class StackOverflow(Exception):
                 def __init__(self,message):
                     self.message=message
@@ -119,29 +119,29 @@ class Stack:
         else:
             t=Node(value)    
             t.set_next_node(self.top)
-            self.top=t
-            self.size+=1
+            self.__top=t
+            self.__size+=1
         
     def pop(self):
         '''returns and removes data from the top of the stack'''
-        if self.size == 0:
+        if self.__size == 0:
             class StackUnderflow(Exception):
                 def __init__(self, message):
                     self.message=message
             raise StackUnderflow('attempted to remove an element from an empty stack')
         else:    
-            t=self.top
-            self.top=self.top.get_next_node()
-            self.size-=1
+            t=self.__top
+            self.__top=self.__top.get_next_node()
+            self.__size-=1
             return t.get_data()
         
     def get_size(self):
-        return self.size
+        return self.__size
     
     def peek(self):
         '''returns data from the top of the stack without removing it'''
-        if self.top:
-            return self.top.get_data()
+        if self.__top:
+            return self.__top.get_data()
         else:
             return None
     
@@ -153,52 +153,52 @@ class Queue:
     
     def __init__(self, max_length):
         '''initializes an empty queue with the set maximum length'''
-        self.max_length=max_length
-        self.length=0
-        self.front_node=None
-        self.back_node=None
+        self.__max_length=max_length
+        self.__length=0
+        self.__front_node=None
+        self.__back_node=None
         
     def get_length(self):
-        return self.length
+        return self.__length
     
     def peek(self):
         '''reveals data from the front of the queue without removing it'''
-        if self.front_node:
-            return self.front_node.get_data()
+        if self.__front_node:
+            return self.__front_node.get_data()
         else:
             return None
         
     def enqueue(self, value):
         '''adds data to the end of the queue'''
-        if self.length == self.max_length:
+        if self.__length == self.__max_length:
             class QueueOverflow(Exception):
                 def __init__(self, message):
                     self.message=message
             raise QueueOverflow('reached maximum length of the queue')
-        elif self.length == 0:
+        elif self.__length == 0:
             t=Node(value)
-            self.front_node=t
-            self.back_node=t
-            self.front_node.set_next_node(self.back_node)
-            self.length+=1
+            self.__front_node=t
+            self.__back_node=t
+            self.__front_node.set_next_node(self.__back_node)
+            self.__length+=1
         else:
             t=Node(value)
-            self.back_node.set_next_node(t)
-            self.back_node=t
-            self.length+=1
+            self.__back_node.set_next_node(t)
+            self.__back_node=t
+            self.__length+=1
             
     def dequeue(self):
         '''provides and removes data from the front of the queue'''
-        if self.length==0:
+        if self.__length==0:
             class QueueUnderflow(Exception):
                 def __init__(self, message):
                     self.message=message
             raise QueueUnderflow('attempted to dequeue an element of an empty queue')
         else:
-            t=self.front_node
-            self.front_node=self.front_node.get_next_node()
-            self.length-=1
-            return t
+            t=self.__front_node
+            self.__front_node=self.__front_node.get_next_node()
+            self.__length-=1
+            return t.get_data()
     
         
 #%%
@@ -212,42 +212,42 @@ class MinHeap:
     '''
     def __init__(self):
         '''initializes an empty min heap'''
-        self.heap=[]
+        self.__heap=[]
         
     def get_size(self):
-        return len(self.heap)
+        return len(self.__heap)
     
     def get_heap(self):
         '''returns the list used to create the heap'''
-        return self.heap
+        return self.__heap
     
-    def heapify_up(self):
-        idx=len(self.heap)-1
+    def __heapify_up(self):
+        idx=len(self.__heap)-1
         parent_idx=(idx-1)//2
         while parent_idx>=0:
-            if self.heap[idx] < self.heap[parent_idx]:
-                t=self.heap[parent_idx]
-                self.heap[parent_idx]=self.heap[idx]
-                self.heap[idx]=t
+            if self.__heap[idx] < self.__heap[parent_idx]:
+                t=self.__heap[parent_idx]
+                self.__heap[parent_idx]=self.__heap[idx]
+                self.__heap[idx]=t
             idx=parent_idx
             parent_idx=(idx-1)//2
             
-    def heapify_down(self):
+    def __heapify_down(self):
         idx=0
         left_idx=idx*2+1
         right_idx=idx*2+2
         while left_idx < self.get_size()-1:
-            if self.heap[left_idx] < self.heap[right_idx]:
-                lesser_child=self.heap[left_idx]
-                self.heap[left_idx]=self.heap[idx]
-                self.heap[idx]=lesser_child
+            if self.__heap[left_idx] < self.__heap[right_idx]:
+                lesser_child=self.__heap[left_idx]
+                self.__heap[left_idx]=self.__heap[idx]
+                self.__heap[idx]=lesser_child
                 idx=left_idx
                 left_idx=idx*2+1
                 right_idx=idx*2+2
             else:
-                lesser_child=self.heap[right_idx]
-                self.heap[right_idx]=self.heap[idx]
-                self.heap[idx]=lesser_child
+                lesser_child=self.__heap[right_idx]
+                self.__heap[right_idx]=self.__heap[idx]
+                self.__heap[idx]=lesser_child
                 idx=right_idx
                 left_idx=idx*2+1
                 right_idx=idx*2+2
@@ -255,8 +255,8 @@ class MinHeap:
             
     def add(self, value):
         '''adds a value to the heap and updates the values to mantain the min rule'''
-        self.heap.append(value)
-        self.heapify_up()
+        self.__heap.append(value)
+        self.__heapify_up()
         
     def pop(self):
         '''returns and removes the minimum value of the heap, updates the values 
@@ -267,10 +267,10 @@ class MinHeap:
                     self.message=message
             raise EmptyHeap('attempted to pop an element from an empty heap')
         else:
-            rightmost_child=self.heap.pop(self.get_size()-1)
-            min_val=self.heap[0]
-            self.heap[0]=rightmost_child
-            self.heapify_down()
+            rightmost_child=self.__heap.pop(self.get_size()-1)
+            min_val=self.__heap[0]
+            self.__heap[0]=rightmost_child
+            self.__heapify_down()
             return min_val
         
 #%%
@@ -284,42 +284,42 @@ class MaxHeap:
     '''
     
     def __init__(self):
-        self.heap=[]
+        self.__heap=[]
         
     def get_size(self):
-        return len(self.heap)
+        return len(self.__heap)
     
     def get_heap(self):
         '''returns the list used to create the heap'''
-        return self.heap
+        return self.__heap
     
-    def heapify_up(self):
-        idx=len(self.heap)-1
+    def __heapify_up(self):
+        idx=len(self.__heap)-1
         parent_idx=(idx-1)//2
         while parent_idx>=0:
-            if self.heap[idx]>self.heap[parent_idx]:
-                t=self.heap[parent_idx]
-                self.heap[parent_idx]=self.heap[idx]
-                self.heap[idx]=t
+            if self.__heap[idx]>self.__heap[parent_idx]:
+                t=self.__heap[parent_idx]
+                self.__heap[parent_idx]=self.__heap[idx]
+                self.__heap[idx]=t
             idx=parent_idx
             parent_idx=(idx-1)//2
             
-    def heapify_down(self):
+    def __heapify_down(self):
         idx=0
         left_idx=idx*2+1
         right_idx=idx*2+2
         while left_idx < self.get_size()-1:
-            if self.heap[left_idx] > self.heap[right_idx]:
-                lesser_child=self.heap[left_idx]
-                self.heap[left_idx]=self.heap[idx]
-                self.heap[idx]=lesser_child
+            if self.__heap[left_idx] > self.__heap[right_idx]:
+                lesser_child=self.__heap[left_idx]
+                self.__heap[left_idx]=self.__heap[idx]
+                self.__heap[idx]=lesser_child
                 idx=left_idx
                 left_idx=idx*2+1
                 right_idx=idx*2+2
             else:
-                lesser_child=self.heap[right_idx]
-                self.heap[right_idx]=self.heap[idx]
-                self.heap[idx]=lesser_child
+                lesser_child=self.__heap[right_idx]
+                self.__heap[right_idx]=self.__heap[idx]
+                self.__heap[idx]=lesser_child
                 idx=right_idx
                 left_idx=idx*2+1
                 right_idx=idx*2+2
@@ -327,8 +327,8 @@ class MaxHeap:
             
     def add(self, value):
         '''adds a value to the heap and updates the values to mantain the max rule'''
-        self.heap.append(value)
-        self.heapify_up()
+        self.__heap.append(value)
+        self.__heapify_up()
         
     def pop(self):
         '''returns and removes the minimum value of the heap, updates the values 
@@ -339,12 +339,63 @@ class MaxHeap:
                     self.message=message
             raise EmptyHeap('attempted to pop an element from an empty heap')
         else:
-            rightmost_child=self.heap.pop(self.get_size()-1)
-            max_val=self.heap[0]
-            self.heap[0]=rightmost_child
-            self.heapify_down()
+            rightmost_child=self.__heap.pop(self.get_size()-1)
+            max_val=self.__heap[0]
+            self.__heap[0]=rightmost_child
+            self.__heapify_down()
             return max_val
+        
+#%%
+
+class Vertex:
     
+    def __init__(self, value):
+        self.value=value
+        self.edges={}
+        
+    def __repr__(self):
+        return 'Vertex({})'.format(repr(self.value))
+        
+    def add_edge(self, vertex, weight=0):
+        self.edges[vertex]=weight
+    
+    
+    def get_edges(self):
+        return list(zip(self.edges.keys(), self.edges.values()))
+    
+#%%
 
+class Graph:
+    
+    def __init__(self, directed=False):
+        self.directed=directed
+        self.graph_dict={}
+        
+    def add_vertex(self, vertex_value):
+        self.graph_dict[vertex_value]=Vertex(vertex_value)
+        
+    def add_edge(self, from_vertex, to_vertex, weight=0):
+        self.graph_dict[from_vertex].add_edge(self.graph_dict[to_vertex], weight)
+        if not self.directed:
+            self.graph_dict[to_vertex].add_edge(self.graph_dict[from_vertex], weight)
+        
 
+v1=Vertex('entrance')
+v2=Vertex('living room')
             
+print(v1.get_edges())
+v1.add_edge(v2)
+print(v1.get_edges())
+print()
+
+railway=Graph()
+railway.add_vertex('callan')
+railway.add_vertex('peel')
+railway.add_vertex('ulfstead')
+railway.add_vertex('harwick')
+
+railway.add_edge('peel', 'harwick')
+railway.add_edge('peel', 'callan')
+
+print(railway.graph_dict)
+print(railway.graph_dict['peel'].get_edges())
