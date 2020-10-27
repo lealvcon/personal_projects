@@ -359,6 +359,8 @@ class Vertex:
     def add_edge(self, vertex, weight=0):
         self.__edges[vertex]=weight
     
+    def get_value(self):
+        return self.__value
     
     def get_edges(self):
         return list(zip(self.__edges.keys(), self.__edges.values()))
@@ -390,12 +392,28 @@ class Graph:
         visited=[]
         while path:
             current_vertex=path.pop(0)
-            if (current_vertex == self.__graph_dict[end_vertex]) :
+            if (current_vertex.get_value() == self.__graph_dict[end_vertex].get_value()) :
                 return True
             else:
-                visited.append(current_vertex)
-                path+=[v for v,w in current_vertex.get_edges() if v not in visited]
+                visited.append(current_vertex.get_value())
+                path+=[v for v,w in current_vertex.get_edges() if v.get_value() not in visited]
         return False
+            
+    def dfs(self, start_vertex, end_vertex):
+        s=Stack(len(self.__graph_dict.keys()))
+        visited=[]
+        s.push(self.__graph_dict[start_vertex])
+        while s.get_size()>0:
+            current_vertex=s.peek()
+            if current_vertex.get_value() not in visited:
+                visited.append(current_vertex.get_value())
+            next_vertices=[v for v,w in current_vertex.get_edges() if v.get_value() not in visited]
+            if not next_vertices:
+                s.pop()
+            else:
+                s.push(next_vertices.pop(0))
+        return visited
+                
             
         
 
@@ -419,3 +437,19 @@ railway.add_edge('harwick','callan')
 
 print(railway.get_graph())
 print(railway.get_graph()['peel'].get_edges())
+print()
+
+t=Graph()
+
+for i in range(1,10):
+    t.add_vertex(i)
+print(t.get_graph())
+t.add_edge(1,2)
+t.add_edge(1,3)
+t.add_edge(3,5)
+t.add_edge(3,6)
+t.add_edge(2,4)
+t.add_edge(2,7)
+t.add_edge(2,8)
+t.add_edge(4,9)
+t.add_edge(7,9)
