@@ -399,57 +399,54 @@ class Graph:
                 path+=[v for v,w in current_vertex.get_edges() if v.get_value() not in visited]
         return False
             
-    def dfs(self, start_vertex, end_vertex):
+    def dfs(self, start_vertex, end_vertex, traverse=False):
+        '''DFS algorithm, outputs a topological sort if traverse is set to True'''
         s=Stack(len(self.__graph_dict.keys()))
         visited=[]
+        out=[]
         s.push(self.__graph_dict[start_vertex])
         while s.get_size()>0:
             current_vertex=s.peek()
+            if not traverse and current_vertex.get_value() == end_vertex:
+                visited.append(current_vertex.get_value())
+                return visited
             if current_vertex.get_value() not in visited:
                 visited.append(current_vertex.get_value())
             next_vertices=[v for v,w in current_vertex.get_edges() if v.get_value() not in visited]
             if not next_vertices:
-                s.pop()
+                out.append(s.pop().get_value())
             else:
                 s.push(next_vertices.pop(0))
-        return visited
+        return out[::-1]
                 
-            
-        
-
-v1=Vertex('entrance')
-v2=Vertex('living room')
-            
-print(v1.get_edges())
-v1.add_edge(v2)
-print(v1.get_edges())
-print()
-
-railway=Graph()
-railway.add_vertex('callan')
-railway.add_vertex('peel')
-railway.add_vertex('ulfstead')
-railway.add_vertex('harwick')
-
-railway.add_edge('peel', 'harwick')
-railway.add_edge('peel', 'callan')
-railway.add_edge('harwick','callan')
-
-print(railway.get_graph())
-print(railway.get_graph()['peel'].get_edges())
-print()
-
-t=Graph()
-
-for i in range(1,10):
-    t.add_vertex(i)
-print(t.get_graph())
-t.add_edge(1,2)
-t.add_edge(1,3)
-t.add_edge(3,5)
-t.add_edge(3,6)
-t.add_edge(2,4)
-t.add_edge(2,7)
-t.add_edge(2,8)
-t.add_edge(4,9)
-t.add_edge(7,9)
+    def bfs(self, start_vertex, end_vertex):
+        queue=[self.__graph_dict[start_vertex]]
+        path=[]
+        visited=[]
+        prev=[None]
+        while queue:
+            current_vertex=queue[0]
+            if current_vertex.get_value() not in visited:
+                visited.append(current_vertex.get_value())
+            neighbors=[v for v,w in current_vertex.get_edges() if v.get_value() not in visited]
+            if not neighbors:
+                queue.pop(0)
+                continue
+            for vertex in neighbors:
+                queue.append(vertex)
+                visited.append(vertex.get_value())
+                prev.append(current_vertex.get_value())
+        now=end_vertex
+        if self.find_path(start_vertex, end_vertex):
+            while now != start_vertex:
+                path.append(now)
+                i=visited.index(now)
+                p=prev[i]
+                now=p
+            path.append(start_vertex)
+            return path[::-1]
+        else:
+            return None
+                
+                
+                
