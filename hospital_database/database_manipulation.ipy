@@ -1,0 +1,73 @@
+import pyodbc
+import pandas as pd
+
+
+
+'''connecting to database'''
+conn = pyodbc.connect('Driver={SQL Server};' 
+                      'Server=DESKTOP-572P7K5\SQLEXPRESS;'
+                      'Database=hospital;'
+                      'Trusted_connection=yes;')
+
+cursor = conn.cursor()
+
+%cd ~/Documents/python_codes/personal_projects/hospital_database/areas
+#%%
+escolares=pd.read_csv('escolares.csv',header=1, sep=',', names=['Código','Ubicación',
+                                              'Nombre del equipo',
+                                              'Marca', 'Modelo',
+                                              'Serie', 'Funcional',
+                                              'Observaciones'])
+escolares.columns=['codigo', 'ubicacion', 'nombre', 'marca','modelo',
+                   'serie','funcional', 'observaciones']
+
+
+escolares.funcional[escolares.funcional=='SÍ']=True
+escolares.funcional[escolares.funcional=='NO']=False
+escolares.nombre[escolares.nombre.notna()]=escolares.nombre[escolares.nombre.notna()].apply(str.title)
+escolares.marca[escolares.marca.notna()]=escolares.marca[escolares.marca.notna()].apply(str.title)
+escolares=escolares.fillna(value={'codigo':0, 'ubicacion':0,
+                                  'nombre':0, 'marca':0,
+                                  'modelo':0, 'serie':0,
+                                  'funcional':0, 'observaciones':0})
+#check if codes are not duplicated
+#escolares.codigo[escolares.codigo.duplicated()]
+#remember to close connection and cursor after finishing
+
+for i in range(len(escolares)):
+    row=escolares.iloc[i]
+    if row.codigo==0:
+        code=None
+    else:
+        code=row.codigo[:11].strip()
+    if row.nombre==0:
+        name=None
+    else:
+        name=row.nombre
+    if row.marca==0:
+        brand=None
+    else:
+        brand=row.marca
+    if row.modelo==0:
+        model=None
+    else:
+        model=row.modelo
+    if row.serie==0:
+        serial=None
+    else:
+        serial=row.serie
+    if row.funcional==0:
+        func=None
+    else:
+        func=bool(row.funcional)
+    if row.observaciones==0:
+        obs=None
+    else:
+        obs=row.observaciones
+    cursor.execute('insert into escolares(codigo, nombre, marca, modelo,serie,funcional,observaciones) \
+                    values(?,?,?,?,?,?,?)', code, name, brand, model, serial, func, obs)
+conn.commit()
+cursor.close()
+del cursor
+conn.close()
+#%%
